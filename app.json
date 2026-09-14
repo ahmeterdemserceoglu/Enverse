@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Enverse",
+    "slug": "enverse",
+    "version": "0.1.0",
+    "scheme": "enverse",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.enverse.app"
+    },
+    "android": {
+      "package": "com.enverse.app",
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
