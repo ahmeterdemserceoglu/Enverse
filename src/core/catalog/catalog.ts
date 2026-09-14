@@ -51,7 +51,9 @@ async function parseCatalog(value: unknown): Promise<LaunchableApp[]> {
 
 export async function loadCatalog(): Promise<{ apps: LaunchableApp[]; source: 'github' | 'cache' | 'bundled' }> {
   try {
-    const response = await fetch(catalogUrl, { headers: { Accept: 'application/json' } });
+    const separator = catalogUrl.includes('?') ? '&' : '?';
+    const requestUrl = `${catalogUrl}${separator}enverse_refresh=${Date.now()}`;
+    const response = await fetch(requestUrl, { headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' } });
     if (!response.ok) throw new Error(`HTTP_${response.status}`);
     const apps = await parseCatalog(await response.json());
     await AsyncStorage.setItem(cacheKey, JSON.stringify(apps));

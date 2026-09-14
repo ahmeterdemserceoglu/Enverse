@@ -43,6 +43,9 @@ export function useAppLauncher(onInstallerOpened?: () => void) {
       await appLauncherService.install(app, (progress) => updateJob(app.id, { phase: progress.ratio >= 1 ? 'verifying' : 'downloading', ...progress }), resume);
       updateJob(app.id, { phase: 'installing', progress: 1 });
       onInstallerOpened?.();
+      // Android'in kurucusu ayrı bir ekran açar. İş sonucu, Enverse yeniden aktif
+      // olduğunda kurulu paket sorgusundan hesaplanır; geçici işi ekranda tutma.
+      setTimeout(() => clearJob(app.id), 1500);
     } catch (error) {
       if (paused.current.has(app.id)) return;
       const code = error instanceof Error ? error.message : 'UNKNOWN';
@@ -51,7 +54,7 @@ export function useAppLauncher(onInstallerOpened?: () => void) {
         Alert.alert('Yükleme izni gerekli', '“Bu kaynaktan uygulama yükle” seçeneğini açıp tekrar dene.');
       } else updateJob(app.id, { phase: 'error', message: errorMessage(code) });
     }
-  }, [onInstallerOpened, updateJob]);
+  }, [clearJob, onInstallerOpened, updateJob]);
 
   const act = useCallback(async (app: LaunchableApp, installed?: InstalledPackage) => {
     const existing = jobs[app.id];

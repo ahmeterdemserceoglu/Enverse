@@ -2,7 +2,7 @@
   "payload": {
     "schemaVersion": 2,
     "channel": "stable",
-    "generatedAt": "2026-09-14T19:01:30.753Z",
+    "generatedAt": "2026-09-14T19:15:15.722Z",
     "apps": [
       {
         "id": "enverse",
@@ -19,9 +19,9 @@
           "Arama, kategoriler ve indirme yönetimi"
         ],
         "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse-Distribution/releases/latest/download/enverse.apk",
-        "sizeBytes": 85508545,
-        "sha256": "d4c5bb8c82de600f9025ed6e313ebb8bc9e489c74b7f963823c2e2caf6c10ee2",
-        "releasedAt": "2026-09-14T19:01:30.346Z"
+        "sizeBytes": 85508785,
+        "sha256": "75478e9c22277e08eb225269594232c22d0f2ee5425414b5c9ea2860da8bb6e3",
+        "releasedAt": "2026-09-14T19:15:15.320Z"
       },
       {
         "id": "maxen",
@@ -38,7 +38,7 @@
         "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse-Distribution/releases/latest/download/maxen.apk",
         "sizeBytes": 86502396,
         "sha256": "c31c46f5e45fb57da887038e267d2bfce5b58f500a728ce500e5472014ba6ae4",
-        "releasedAt": "2026-09-14T19:01:30.539Z"
+        "releasedAt": "2026-09-14T19:15:15.511Z"
       },
       {
         "id": "tuben",
@@ -55,7 +55,7 @@
         "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse-Distribution/releases/latest/download/tuben.apk",
         "sizeBytes": 93203956,
         "sha256": "a42f523308dd1f724066115db4fd0b142a979bfe12384be44efe1258d252aaf0",
-        "releasedAt": "2026-09-14T19:01:30.753Z"
+        "releasedAt": "2026-09-14T19:15:15.722Z"
       },
       {
         "id": "voxen",
@@ -72,9 +72,9 @@
         "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse-Distribution/releases/latest/download/voxen.apk",
         "sizeBytes": 43991573,
         "sha256": "dd0740cc6c1e0b8d70d57d0e9adebbea3feda69ddf8cd4567df4f4033b464330",
-        "releasedAt": "2026-09-14T19:01:30.130Z"
+        "releasedAt": "2026-09-14T19:15:15.106Z"
       }
     ]
   },
-  "signature": "QgnQ9s6p8G8Qm97pQYSdEnTz2MlaBWO3sb82k+iWIb8DmVUF0XbpbdIVt1OdR847Rob+gCFTNPxhxXQ+qSNOwaG+EkVkBAAB7xWjNuYg7LL4XJeUxJTgFG5uFBdYdPrJ5LsISm5OE3czsOKNA7vRmyipZgioT29mbMMK5v42ycwezdRinkK/nTlzAguy5jfNBiMLc69tgRLT5rItV7Vc9GW7LG5UWhDHuFU+DzpU2sFpn33upDiXy+yLMVFrEyoV9Up0YxrPzVF5wdwDrtEk9gbvhpwMo7rDQ5KpQWM6x69WVzMcM1c7UL7Auuyvfa4WeEZ2bTdqOKhEyOWRq+eITQ=="
+  "signature": "ckqgVhIdZWphFu9CGILGMoha/Ap1ORwkr8ak4BMs38oWy+1iwCZDMk/nHvHQQmnqbGY7DJkR1jneOfTsHpnbRdsK9u+er/WyL4/e8BuSEFWNja/69PJpBFocI/qH2aav8no7hsjmmdHiAfn+PnCo9VI2mw1tkmUrfVQgLnRSXBCEWpeiHiJGsJ1loyCZ1r7uw6P35LJ37zRct/98LCnjGy/T8QVUwRIAUw+Gm7EK5dKIubFln8Hz4EoZX8FKcsMrT9zXWOAe1ONhNsCv5Q2PDT9DG4CQVSGkb6HDIbB8rYaGxrAsk1V/yQQ+lXvquD+Ltp6BBkdPD0Zx6OAulpRUOw=="
 }

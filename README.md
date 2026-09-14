@@ -38,6 +38,8 @@ Kaynak kod ile APK dağıtımı ayrılmıştır:
 
 Yeni APK'yı dağıtım deposunun son Release'ine yükleyip `manifest.json` kaydını güncelleyin. GitHub Actions APK boyutunu ve SHA-256 değerini hesaplar, `apps.json` dosyasını repository secret içindeki özel anahtarla imzalar ve yayınlar. Uygulama yalnızca içine gömülü açık anahtarla doğrulanan katalogları kabul eder.
 
+Adım adım sürüm ve katalog işletim rehberi: [`distribution/KATALOG_KULLANIM_REHBERI.md`](./distribution/KATALOG_KULLANIM_REHBERI.md).
+
 APK adresleri güvenlik nedeniyle yalnızca HTTPS GitHub Release adreslerinden kabul edilir. Ağ yoksa son başarılı doğrulanmış katalog cihaz önbelleğinden, o da yoksa uygulamayla gelen katalog açılır. Katalog ekranını aşağı çekmek GitHub listesini ve kurulu sürümleri yeniler.
 
 > Dağıtım deposu private yapılırsa GitHub, katalog ve APK isteklerinde kimlik doğrulaması ister; cihazlar güncelleme alamaz. Public olmak yazma yetkisini açmaz: manifest ve Release yükleme yetkisi yalnızca repo sahibi ile açıkça yetkilendirilmiş collaborator'lardadır.
