@@ -1,73 +1,42 @@
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
+import type { LaunchableApp } from './apps';
 import { appLauncherService } from './AppLauncherService';
-import { launchableApps, type LaunchableAppId } from './apps';
 
 export type LauncherPhase = 'idle' | 'opening' | 'permission' | 'downloading' | 'installing' | 'error';
-
-type LauncherState = {
-  appId: LaunchableAppId | null;
-  phase: LauncherPhase;
-  progress: number;
-  written: number;
-  total: number;
-  message?: string;
-};
-
-const initialState: LauncherState = { appId: null, phase: 'idle', progress: 0, written: 0, total: 0 };
+type State = { appId: string | null; phase: LauncherPhase; progress: number; written: number; total: number; message?: string };
+const idle: State = { appId: null, phase: 'idle', progress: 0, written: 0, total: 0 };
 
 export function useAppLauncher() {
-  const [state, setState] = useState<LauncherState>(initialState);
-  const reset = useCallback(() => setState(initialState), []);
+  const [state, setState] = useState<State>(idle);
+  const reset = useCallback(() => setState(idle), []);
 
-  const install = useCallback(async (appId: LaunchableAppId) => {
-    const app = launchableApps[appId];
+  const install = useCallback(async (app: LaunchableApp) => {
     try {
-      setState({ ...initialState, appId, phase: 'downloading' });
-      await appLauncherService.install(app, ({ ratio, written, total }) =>
-        setState({ appId, phase: 'downloading', progress: ratio, written, total }),
-      );
+      setState({ ...idle, appId: app.id, phase: 'downloading' });
+      await appLauncherService.install(app, ({ ratio, written, total }) => setState({ appId: app.id, phase: 'downloading', progress: ratio, written, total }));
       setState((current) => ({ ...current, phase: 'installing', progress: 1 }));
     } catch (error) {
       const code = error instanceof Error ? error.message : 'UNKNOWN';
       if (code === 'INSTALL_PERMISSION_REQUIRED') {
-        setState({ ...initialState, appId, phase: 'permission', message: 'Yükleme iznini aç ve tekrar dokun.' });
-        Alert.alert('Yükleme izni gerekli', '“Bu kaynaktan uygulama yükle” seçeneğini aç. Enverse’e dönünce karta tekrar dokun.');
-      } else {
-        const message = code === 'APK_URL_NOT_CONFIGURED'
-          ? 'APK bağlantısı yapılandırılmamış.'
-          : 'İndirme tamamlanamadı. Tekrar deneyebilirsin.';
-        setState({ ...initialState, appId, phase: 'error', message });
-      }
+        setState({ ...idle, appId: app.id, phase: 'permission', message: 'Yükleme izni gerekli' });
+        Alert.alert('Yükleme izni gerekli', '“Bu kaynaktan uygulama yükle” seçeneğini açıp tekrar dene.');
+      } else setState({ ...idle, appId: app.id, phase: 'error', message: 'İndirme tamamlanamadı' });
     }
   }, []);
 
-  const open = useCallback(async (appId: LaunchableAppId) => {
+  const open = useCallback(async (app: LaunchableApp) => {
     if (!['idle', 'error', 'permission'].includes(state.phase)) return;
-    const app = launchableApps[appId];
-    setState({ ...initialState, appId, phase: 'opening' });
+    setState({ ...idle, appId: app.id, phase: 'opening' });
     const result = await appLauncherService.open(app);
-
-    if (result.kind === 'opened') {
-      reset();
-      return;
-    }
-    if (result.kind === 'unsupported-platform') {
-      setState({ ...initialState, appId, phase: 'error', message: 'Bu özellik yalnızca Android’de çalışır.' });
-      return;
-    }
-
-    setState({ ...initialState, appId, phase: 'idle' });
-    Alert.alert(
-      `${app.name} kurulu değil`,
-      'APK, Enverse GitHub sürümünden doğrudan indirilecek. Android son adımda kurulum onayı ister.',
-      [
-        { text: 'Vazgeç', style: 'cancel', onPress: reset },
-        { text: 'İndir ve kur', onPress: () => void install(appId) },
-      ],
-    );
+    if (result.kind === 'opened') return reset();
+    if (result.kind === 'unsupported-platform') return setState({ ...idle, appId: app.id, phase: 'error', message: 'Yalnızca Android' });
+    setState(idle);
+    Alert.alert(`${app.name} kurulu değil`, 'GitHub üzerindeki APK indirilsin mi?', [
+      { text: 'Vazgeç', style: 'cancel' },
+      { text: 'İndir ve kur', onPress: () => void install(app) },
+    ]);
   }, [install, reset, state.phase]);
 
-  const busy = !['idle', 'error', 'permission'].includes(state.phase);
-  return { ...state, busy, open, reset };
+  return { ...state, busy: !['idle', 'error', 'permission'].includes(state.phase), open, reset };
 }

@@ -26,6 +26,12 @@ pnpm run test
 pnpm exec expo export --platform web --output-dir dist
 ```
 
+## GitHub kataloğuna uygulama ekleme
+
+Enverse açılışta [`catalog/apps.json`](./catalog/apps.json) dosyasını GitHub üzerinden okur. Yeni bir uygulama göstermek için `apps` dizisine benzersiz `id`, görünen `name`, `description`, Android `packageName` ve GitHub Releases üzerindeki `apkUrl` alanlarını ekleyip `main` dalına gönderin. İsteğe bağlı `category`, `accent` (`#RRGGBB`) ve GitHub üzerinde barındırılan `iconUrl` kullanılabilir.
+
+APK adresleri güvenlik nedeniyle yalnızca HTTPS GitHub Release adreslerinden kabul edilir. Ağ yoksa son başarılı katalog cihaz önbelleğinden, o da yoksa uygulamayla gelen üçlü katalogdan açılır. Ana ekrandaki yenile düğmesi kataloğu anında tekrar çeker.
+
 Detaylı uygulama şartnamesi için [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md), ilerleme için [MIGRATION_STATUS.md](./MIGRATION_STATUS.md) ve mimari kararlar için [DECISIONS.md](./DECISIONS.md) dosyalarını okuyun.
 
 ## Bağlanan Android paketleri

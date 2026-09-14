@@ -22,6 +22,7 @@
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
+        "QUERY_ALL_PACKAGES",
         "REQUEST_INSTALL_PACKAGES"
       ]
     },
