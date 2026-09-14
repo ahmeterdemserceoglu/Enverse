@@ -3,57 +3,71 @@ import { Alert } from 'react-native';
 import { appLauncherService } from './AppLauncherService';
 import { launchableApps, type LaunchableAppId } from './apps';
 
+export type LauncherPhase = 'idle' | 'opening' | 'permission' | 'downloading' | 'installing' | 'error';
+
 type LauncherState = {
   appId: LaunchableAppId | null;
-  phase: 'idle' | 'opening' | 'downloading' | 'installing';
+  phase: LauncherPhase;
   progress: number;
+  written: number;
+  total: number;
+  message?: string;
 };
 
-const initialState: LauncherState = { appId: null, phase: 'idle', progress: 0 };
+const initialState: LauncherState = { appId: null, phase: 'idle', progress: 0, written: 0, total: 0 };
 
 export function useAppLauncher() {
   const [state, setState] = useState<LauncherState>(initialState);
+  const reset = useCallback(() => setState(initialState), []);
 
   const install = useCallback(async (appId: LaunchableAppId) => {
     const app = launchableApps[appId];
     try {
-      setState({ appId, phase: 'downloading', progress: 0 });
-      await appLauncherService.install(app, ({ ratio }) =>
-        setState({ appId, phase: 'downloading', progress: ratio }),
+      setState({ ...initialState, appId, phase: 'downloading' });
+      await appLauncherService.install(app, ({ ratio, written, total }) =>
+        setState({ appId, phase: 'downloading', progress: ratio, written, total }),
       );
-      setState({ appId, phase: 'installing', progress: 1 });
+      setState((current) => ({ ...current, phase: 'installing', progress: 1 }));
     } catch (error) {
       const code = error instanceof Error ? error.message : 'UNKNOWN';
       if (code === 'INSTALL_PERMISSION_REQUIRED') {
-        Alert.alert('Yükleme izni gerekli', 'Enverse için “Bu kaynaktan uygulama yükle” seçeneğini açtıktan sonra tekrar dene.');
-      } else if (code === 'APK_URL_NOT_CONFIGURED') {
-        Alert.alert('İndirme adresi eksik', `${app.name} APK bağlantısı henüz Enverse yapılandırmasına eklenmemiş.`);
+        setState({ ...initialState, appId, phase: 'permission', message: 'Yükleme iznini aç ve tekrar dokun.' });
+        Alert.alert('Yükleme izni gerekli', '“Bu kaynaktan uygulama yükle” seçeneğini aç. Enverse’e dönünce karta tekrar dokun.');
       } else {
-        Alert.alert('Kurulum başlatılamadı', 'APK indirilemedi veya Android kurucusu açılamadı.');
+        const message = code === 'APK_URL_NOT_CONFIGURED'
+          ? 'APK bağlantısı yapılandırılmamış.'
+          : 'İndirme tamamlanamadı. Tekrar deneyebilirsin.';
+        setState({ ...initialState, appId, phase: 'error', message });
       }
-    } finally {
-      setState(initialState);
     }
   }, []);
 
   const open = useCallback(async (appId: LaunchableAppId) => {
+    if (!['idle', 'error', 'permission'].includes(state.phase)) return;
     const app = launchableApps[appId];
-    setState({ appId, phase: 'opening', progress: 0 });
+    setState({ ...initialState, appId, phase: 'opening' });
     const result = await appLauncherService.open(app);
-    setState(initialState);
 
-    if (result.kind === 'unsupported-platform') {
-      Alert.alert('Yalnızca Android', 'Paket tabanlı uygulama açma ve APK kurulumu Android üzerinde kullanılabilir.');
+    if (result.kind === 'opened') {
+      reset();
       return;
     }
-    if (result.kind === 'not-installed') {
-      Alert.alert(
-        `${app.name} kurulu değil`,
-        `${app.name} APK dosyası GitHub Releases üzerinden indirilsin mi?`,
-        [{ text: 'Vazgeç', style: 'cancel' }, { text: 'İndir ve kur', onPress: () => void install(appId) }],
-      );
+    if (result.kind === 'unsupported-platform') {
+      setState({ ...initialState, appId, phase: 'error', message: 'Bu özellik yalnızca Android’de çalışır.' });
+      return;
     }
-  }, [install]);
 
-  return { ...state, open };
+    setState({ ...initialState, appId, phase: 'idle' });
+    Alert.alert(
+      `${app.name} kurulu değil`,
+      'APK, Enverse GitHub sürümünden doğrudan indirilecek. Android son adımda kurulum onayı ister.',
+      [
+        { text: 'Vazgeç', style: 'cancel', onPress: reset },
+        { text: 'İndir ve kur', onPress: () => void install(appId) },
+      ],
+    );
+  }, [install, reset, state.phase]);
+
+  const busy = !['idle', 'error', 'permission'].includes(state.phase);
+  return { ...state, busy, open, reset };
 }

@@ -2,7 +2,8 @@
   "expo": {
     "name": "Enverse",
     "slug": "enverse",
-    "version": "0.1.0",
+    "version": "0.1.1",
+    "icon": "./assets/icon.png",
     "scheme": "enverse",
     "orientation": "default",
     "userInterfaceStyle": "dark",
@@ -12,6 +13,11 @@
     },
     "android": {
       "package": "com.enverse.app",
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#050713"
+      },
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "INTERNET",
@@ -21,7 +27,8 @@
     },
     "plugins": ["./plugins/withLauncherQueries.js"],
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
     }
   }
 }
