@@ -1,32 +1,6 @@
 {
-  "version": 1,
-  "apps": [
-    {
-      "id": "maxen",
-      "name": "Maxen",
-      "description": "Film ve dizi",
-      "category": "Video",
-      "packageName": "com.maxen.app",
-      "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse/releases/latest/download/maxen.apk",
-      "accent": "#E94B61"
-    },
-    {
-      "id": "tuben",
-      "name": "Tuben",
-      "description": "Video ve shorts",
-      "category": "Video",
-      "packageName": "com.tuben.app",
-      "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse/releases/latest/download/tuben.apk",
-      "accent": "#4285E8"
-    },
-    {
-      "id": "voxen",
-      "name": "Voxen",
-      "description": "Müzik ve podcast",
-      "category": "Müzik",
-      "packageName": "com.voxen.music",
-      "apkUrl": "https://github.com/ahmeterdemserceoglu/Enverse/releases/latest/download/voxen.apk",
-      "accent": "#9254D8"
-    }
-  ]
+  "deprecated": true,
+  "message": "Katalog güvenlik nedeniyle ayrı public dağıtım deposuna taşındı.",
+  "catalogUrl": "https://github.com/ahmeterdemserceoglu/Enverse-Distribution/blob/main/apps.json",
+  "manifestUrl": "https://github.com/ahmeterdemserceoglu/Enverse-Distribution/blob/main/manifest.json"
 }

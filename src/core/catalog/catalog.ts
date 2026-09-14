@@ -1,12 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { bundledApps, type LaunchableApp } from '../launcher/apps';
 import { assertTrustedApkUrl } from '../launcher/apkUrl';
+import { enverseDevice } from '../device/EnverseDevice';
 
 export const catalogUrl = process.env.EXPO_PUBLIC_APP_CATALOG_URL
-  || 'https://raw.githubusercontent.com/ahmeterdemserceoglu/Enverse/main/catalog/apps.json';
+  || 'https://raw.githubusercontent.com/ahmeterdemserceoglu/Enverse-Distribution/main/apps.json';
 const cacheKey = 'enverse.app-catalog.v1';
 const packagePattern = /^[a-zA-Z][\w]*(\.[a-zA-Z][\w]*)+$/;
 const colorPattern = /^#[0-9a-fA-F]{6}$/;
+const hashPattern = /^[0-9a-fA-F]{64}$/;
+const catalogPublicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtJMLoh74zgAcdrs9+WUiMCvm8Cz52oJJtX80iinzkLX8NtNFy0+2nhBjGVmcoCGAXvMBU85SAHqXTxgSXpcLRB2YV75OTJuD5/CqOqBs1BikRSJzBre3N2mdsedcbDDu0ZHEi2xEBfBFUNlz/QluJ8VtmFaDVJb8TBYMrmayIcFCe8VDqQpt4T/A2ue1PcKDEsNnwgZnKiuaZfQKlnZPOD/FouFPbEpz3KD/50sHOUOYltqHOBHK4Dj5h/K63XZXUtX8iWDDABy5Dug80Tr9YRhlEAlrf8WApAnNKTqDOhCgn7kkZoM0x11mhwC+uwsEVnfg/i+/d8ZBjelKTyKLrQIDAQAB';
 
 function parseApp(value: unknown): LaunchableApp | null {
   if (!value || typeof value !== 'object') return null;
@@ -25,12 +28,23 @@ function parseApp(value: unknown): LaunchableApp | null {
     iconUrl,
     accent: typeof app.accent === 'string' && colorPattern.test(app.accent) ? app.accent : '#6D6F78',
     category: typeof app.category === 'string' ? app.category.slice(0, 30) : 'Uygulama',
+    versionName: typeof app.versionName === 'string' ? app.versionName.slice(0, 30) : '0',
+    versionCode: typeof app.versionCode === 'number' && Number.isSafeInteger(app.versionCode) && app.versionCode >= 0 ? app.versionCode : 0,
+    sizeBytes: typeof app.sizeBytes === 'number' && app.sizeBytes > 0 ? app.sizeBytes : undefined,
+    sha256: typeof app.sha256 === 'string' && hashPattern.test(app.sha256) ? app.sha256.toLowerCase() : undefined,
+    changelog: Array.isArray(app.changelog) ? app.changelog.filter((line): line is string => typeof line === 'string').slice(0, 12).map((line) => line.slice(0, 160)) : undefined,
+    releasedAt: typeof app.releasedAt === 'string' ? app.releasedAt : undefined,
   };
 }
 
-function parseCatalog(value: unknown): LaunchableApp[] {
-  if (!value || typeof value !== 'object' || !Array.isArray((value as { apps?: unknown }).apps)) throw new Error('INVALID_CATALOG');
-  const apps = (value as { apps: unknown[] }).apps.map(parseApp).filter((app): app is LaunchableApp => Boolean(app));
+async function parseCatalog(value: unknown): Promise<LaunchableApp[]> {
+  if (!value || typeof value !== 'object') throw new Error('INVALID_CATALOG');
+  const document = value as { payload?: unknown; signature?: unknown };
+  if (!document.payload || typeof document.signature !== 'string') throw new Error('UNSIGNED_CATALOG');
+  const verified = await enverseDevice.verifyRsaSha256(JSON.stringify(document.payload), document.signature, catalogPublicKey);
+  if (!verified) throw new Error('INVALID_CATALOG_SIGNATURE');
+  if (!Array.isArray((document.payload as { apps?: unknown }).apps)) throw new Error('INVALID_CATALOG');
+  const apps = (document.payload as { apps: unknown[] }).apps.map(parseApp).filter((app): app is LaunchableApp => Boolean(app));
   if (!apps.length) throw new Error('EMPTY_CATALOG');
   return apps;
 }
@@ -39,13 +53,13 @@ export async function loadCatalog(): Promise<{ apps: LaunchableApp[]; source: 'g
   try {
     const response = await fetch(catalogUrl, { headers: { Accept: 'application/json' } });
     if (!response.ok) throw new Error(`HTTP_${response.status}`);
-    const apps = parseCatalog(await response.json());
+    const apps = await parseCatalog(await response.json());
     await AsyncStorage.setItem(cacheKey, JSON.stringify(apps));
     return { apps, source: 'github' };
   } catch {
     const cached = await AsyncStorage.getItem(cacheKey);
     if (cached) {
-      try { return { apps: parseCatalog({ apps: JSON.parse(cached) }), source: 'cache' }; } catch { /* use bundle */ }
+      try { return { apps: JSON.parse(cached) as LaunchableApp[], source: 'cache' }; } catch { /* use bundle */ }
     }
     return { apps: bundledApps, source: 'bundled' };
   }
