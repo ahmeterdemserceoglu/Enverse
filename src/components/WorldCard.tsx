@@ -12,7 +12,7 @@ const config = {
   voxen: { title: 'VOXEN', subtitle: 'Müzik & Podcast', icon: 'musical-notes-outline', colors: ['#30134E', '#100A17'] as const, accent: theme.colors.voxen },
 };
 
-export function WorldCard({ world, onPress }: { world: World; onPress: () => void }) {
+export function WorldCard({ world, onPress, status }: { world: World; onPress: () => void; status?: string }) {
   const item = config[world];
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.shell, pressed && styles.pressed]}>
@@ -22,7 +22,7 @@ export function WorldCard({ world, onPress }: { world: World; onPress: () => voi
         </View>
         <View style={styles.copy}>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.subtitle}>{item.subtitle}</Text>
+          <Text style={styles.subtitle}>{status ?? item.subtitle}</Text>
         </View>
         <Ionicons name="arrow-forward" size={20} color={item.accent} />
       </LinearGradient>

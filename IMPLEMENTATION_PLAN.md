@@ -1,5 +1,7 @@
 # Enverse — Eksiksiz Uygulama ve Migrasyon Planı
 
+> **DURUM: GEÇERSİZ / ARŞİV.** Kullanıcı ürün kararını değiştirdi. Üç uygulama tek kod tabanına taşınmayacaktır. Güncel bağlayıcı plan `LAUNCHER_IMPLEMENTATION_PLAN.md` dosyasıdır.
+
 > Bu belge, Enverse'i başka bir agentın baştan sona uygulayabilmesi için hazırlanmış bağlayıcı teknik şartnamedir. Burada açıkça belirtilen kararları değiştirmeyin. Zorunlu bir teknik engel çıkarsa mevcut davranışı bozmayan en küçük değişikliği yapın ve değişikliği `DECISIONS.md` dosyasına gerekçesiyle kaydedin.
 
 ## 1. Ürün vizyonu

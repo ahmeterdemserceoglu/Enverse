@@ -1,5 +1,7 @@
 # Enverse — Güncel Devir ve Devam Planı
 
+> **DURUM: GEÇERSİZ / ARŞİV.** Güncel ürün modeli ve devam işleri `LAUNCHER_IMPLEMENTATION_PLAN.md` dosyasındadır.
+
 > Tarih: 2026-09-13. Bu belge, ilk uygulama çalışmasının gerçek durumunu kaydeder. Yeni agent önce `IMPLEMENTATION_PLAN.md` dosyasının tamamını, sonra bu dosyayı okumalıdır. Çelişki halinde ürün/mimari hedeflerde `IMPLEMENTATION_PLAN.md`; mevcut kod ve sıradaki somut işlerde bu dosya esas alınır.
 
 ## 1. Şu anda çalışan durum

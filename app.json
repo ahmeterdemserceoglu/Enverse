@@ -13,8 +13,13 @@
     "android": {
       "package": "com.enverse.app",
       "predictiveBackGestureEnabled": false,
-      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "REQUEST_INSTALL_PACKAGES"
+      ]
     },
+    "plugins": ["./plugins/withLauncherQueries.js"],
     "web": {
       "bundler": "metro"
     }

@@ -1,13 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { continueItems } from '../content';
+import { useAppLauncher } from '../core/launcher/useAppLauncher';
 import { theme } from '../theme';
-import type { EnverseWorld } from '../types';
 import { WorldCard } from '../components/WorldCard';
 
-export function HomeScreen({ onOpen }: { onOpen: (world: EnverseWorld) => void }) {
+export function HomeScreen() {
   const { width } = useWindowDimensions();
   const compact = width < 720;
+  const launcher = useAppLauncher();
+  const statusFor = (world: 'maxen' | 'tuben' | 'voxen') => {
+    if (launcher.appId !== world) return undefined;
+    if (launcher.phase === 'opening') return 'Açılıyor…';
+    if (launcher.phase === 'installing') return 'Android kurucusu açılıyor…';
+    if (launcher.phase === 'downloading') return `İndiriliyor · %${Math.round(launcher.progress * 100)}`;
+    return undefined;
+  };
   return (
     <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
@@ -25,9 +33,9 @@ export function HomeScreen({ onOpen }: { onOpen: (world: EnverseWorld) => void }
       </View>
 
       <View style={[styles.worlds, compact && styles.worldsCompact]}>
-        <WorldCard world="maxen" onPress={() => onOpen('maxen')} />
-        <WorldCard world="tuben" onPress={() => onOpen('tuben')} />
-        <WorldCard world="voxen" onPress={() => onOpen('voxen')} />
+        <WorldCard world="maxen" status={statusFor('maxen')} onPress={() => void launcher.open('maxen')} />
+        <WorldCard world="tuben" status={statusFor('tuben')} onPress={() => void launcher.open('tuben')} />
+        <WorldCard world="voxen" status={statusFor('voxen')} onPress={() => void launcher.open('voxen')} />
       </View>
 
       <Text style={styles.sectionTitle}>Senin evrenin</Text>
