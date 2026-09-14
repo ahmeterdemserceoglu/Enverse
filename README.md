@@ -30,7 +30,9 @@ pnpm exec expo export --platform web --output-dir dist
 
 Enverse açılışta [`catalog/apps.json`](./catalog/apps.json) dosyasını GitHub üzerinden okur. Yeni bir uygulama göstermek için `apps` dizisine benzersiz `id`, görünen `name`, `description`, Android `packageName` ve GitHub Releases üzerindeki `apkUrl` alanlarını ekleyip `main` dalına gönderin. İsteğe bağlı `category`, `accent` (`#RRGGBB`) ve GitHub üzerinde barındırılan `iconUrl` kullanılabilir.
 
-APK adresleri güvenlik nedeniyle yalnızca HTTPS GitHub Release adreslerinden kabul edilir. Ağ yoksa son başarılı katalog cihaz önbelleğinden, o da yoksa uygulamayla gelen üçlü katalogdan açılır. Ana ekrandaki yenile düğmesi kataloğu anında tekrar çeker.
+APK adresleri güvenlik nedeniyle yalnızca HTTPS GitHub Release adreslerinden kabul edilir. Ağ yoksa son başarılı katalog cihaz önbelleğinden, o da yoksa uygulamayla gelen üçlü katalogdan açılır. Katalog ekranını aşağı çekmek GitHub listesini anında yeniler.
+
+> Dağıtım deposu private yapılırsa GitHub, katalog ve APK isteklerinde kimlik doğrulaması ister; sonradan eklenen uygulamalar anonim cihazlara ulaşmaz. Kaynak kod gizlenecekse private kaynak repo ile public katalog/Release reposunu ayrı tutun. Public repoya yazma ve Release yükleme yetkisi yine yalnızca repo sahibindedir.
 
 Detaylı uygulama şartnamesi için [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md), ilerleme için [MIGRATION_STATUS.md](./MIGRATION_STATUS.md) ve mimari kararlar için [DECISIONS.md](./DECISIONS.md) dosyalarını okuyun.
 
