@@ -2,7 +2,7 @@
   "expo": {
     "name": "Enverse",
     "slug": "enverse",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "icon": "./assets/icon.png",
     "scheme": "enverse",
     "orientation": "default",
@@ -13,7 +13,7 @@
     },
     "android": {
       "package": "com.enverse.app",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FAFAF9"
